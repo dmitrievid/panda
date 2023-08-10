@@ -17,6 +17,7 @@ import (
 
 func sshServerEstablishConnection() (*ssh.Client, error) {
 	// Set up SSH config for the new Client
+
 	// hostKeyCallback, err := knownhosts.New("/home/ncarob/.ssh/known_hosts")
 	// if err != nil {
 	// 	log.Printf("Error. Could not set up known_hosts: %v\n", err)
@@ -76,9 +77,9 @@ func updateShipmentData(w http.ResponseWriter, _ *http.Request) {
 	fmt.Fprintln(w, "Merging import & export pdfs...")
 	cmd := exec.Command(
 		"./merge2pdf",
-		"../tmp/stavki.pdf",
-		"../tmp/import.pdf",
-		"../tmp/export.pdf",
+		os.Getenv("PATH_TO_STAVKI"),
+		os.Getenv("PATH_TO_IMPORT"),
+		os.Getenv("PATH_TO_EXPORT"),
 	)
 	err := cmd.Run()
 	if err != nil {
@@ -111,8 +112,8 @@ func updateShipmentData(w http.ResponseWriter, _ *http.Request) {
 	fmt.Fprintln(w, "Updating pdf files...")
 	err = updateFile(
 		client,
-		"../tmp/raspisanie.pdf",
-		"./h303846598.nichost.ru/docs/rasp2.pdf",
+		os.Getenv("PATH_TO_RASPISANIE_LOCAL"),
+		os.Getenv("PATH_TO_RASPISANIE_REMOTE"),
 	)
 	if err != nil {
 		fmt.Fprintf(w, "Error. Could not update rasp.pdf: %v\n", err)
@@ -120,8 +121,8 @@ func updateShipmentData(w http.ResponseWriter, _ *http.Request) {
 	}
 	err = updateFile(
 		client,
-		"../tmp/stavki.pdf",
-		"./h303846598.nichost.ru/docs/stavki2.pdf",
+		os.Getenv("PATH_TO_STAVKI_LOCAL"),
+		os.Getenv("PATH_TO_STAVKI_REMOTE"),
 	)
 	if err != nil {
 		fmt.Fprintf(w, "Error. Could not update stavki.pdf: %v\n", err)
